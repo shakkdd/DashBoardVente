@@ -1,12 +1,13 @@
 # Documentation Postgres + Docker
 
-Ce dossier explique, étape par étape, comment installer Docker, lancer Postgres, puis le relier à FastAPI.
+Ce dossier explique, étape par étape, comment installer Docker, lancer Postgres, le relier à FastAPI, puis afficher le dashboard Streamlit.
 
 Tu n’as pas besoin de tout connaître. Suis les fichiers dans l’ordre :
 
 1. [Installer Docker Desktop](01-installer-docker-desktop.md)
 2. [Lancer Postgres](02-lancer-postgres.md)
 3. [Relier FastAPI à Postgres](03-connecter-fastapi.md)
+4. [Dashboard Streamlit](04-dashboard-streamlit.md)
 
 ## Pourquoi pas de Dockerfile ?
 
