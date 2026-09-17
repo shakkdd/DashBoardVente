@@ -4,6 +4,7 @@ from back.database import get_db
 from back.models.Ventes import Vente as MVente
 from back.models.Region import Region as MRegion
 from back.models.Vendeur import Vendeur as MVendeur
+from back.models.Produit import Produit as MProduit
 from sqlalchemy.orm import Session
 from datetime import date
 from typing import Optional
@@ -20,7 +21,7 @@ def get_all_ventes(db : Session = Depends(get_db)):
 def get_ventes(
     date_debut: Optional[date] = None,
     date_fin: Optional[date] = None,
-    categorie: Optional[int] = None,
+    categorie: Optional[str] = None,
     region: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
@@ -32,7 +33,7 @@ def get_ventes(
     if date_fin:
         query = query.filter(MVente.date_vente <= date_fin)
     if categorie:
-        query = query.filter(MVente.produit_id == categorie)
+        query = query.join(MProduit, MVente.produit_id == MProduit.id).filter(MProduit.categorie == categorie)
     if region:
         query = query.join(MVendeur, MVente.vendeur_id == MVendeur.id).filter(MVendeur.region_id == region)
 

@@ -14,13 +14,13 @@ router = APIRouter(prefix="/kpi", tags=["KPI"])
 
 
 def apply_filters(query, date_debut: Optional[date] = None, date_fin: Optional[date] = None,
-                 categorie: Optional[int] = None, region: Optional[int] = None):
+                 categorie: Optional[str] = None, region: Optional[int] = None):
     if date_debut:
         query = query.filter(MVente.date_vente >= date_debut)
     if date_fin:
         query = query.filter(MVente.date_vente <= date_fin)
     if categorie:
-        query = query.filter(MVente.produit_id == categorie)
+        query = query.join(MProduit, MVente.produit_id == MProduit.id).filter(MProduit.categorie == categorie)
     if region:
         query = query.join(MVendeur, MVente.vendeur_id == MVendeur.id).filter(MVendeur.region_id == region)
     return query
@@ -30,7 +30,7 @@ def apply_filters(query, date_debut: Optional[date] = None, date_fin: Optional[d
 def get_ca_total(
     date_debut: Optional[date] = None,
     date_fin: Optional[date] = None,
-    categorie: Optional[int] = None,
+    categorie: Optional[str] = None,
     region: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
@@ -44,7 +44,7 @@ def get_ca_total(
 def get_ca_par_region(
     date_debut: Optional[date] = None,
     date_fin: Optional[date] = None,
-    categorie: Optional[int] = None,
+    categorie: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     """CA agrégé par région"""
@@ -94,7 +94,7 @@ def get_ca_par_produit(
 def get_evolution_mensuelle(
     date_debut: Optional[date] = None,
     date_fin: Optional[date] = None,
-    categorie: Optional[int] = None,
+    categorie: Optional[str] = None,
     region: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
@@ -118,7 +118,7 @@ def get_evolution_mensuelle(
 def get_top_vendeurs(
     date_debut: Optional[date] = None,
     date_fin: Optional[date] = None,
-    categorie: Optional[int] = None,
+    categorie: Optional[str] = None,
     region: Optional[int] = None,
     limit: int = 10,
     db: Session = Depends(get_db),
