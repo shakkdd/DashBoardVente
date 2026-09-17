@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from back.database import get_db
-from back.routers import Region, Vente, Vendeur, Produit
+from back.routers import Region, Vente, Vendeur, Produit, KPI
 
 @asynccontextmanager
 async def lifespan(app : FastAPI):
@@ -14,3 +14,5 @@ app.include_router(router= Region.router)
 app.include_router(router= Vente.router)
 app.include_router(router= Vendeur.routeur)
 app.include_router(router= Produit.router)
+app.include_router(router= KPI.router)
+app.include_router(router = KPI.router)

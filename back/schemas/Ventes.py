@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import date
 
 class Vente(BaseModel):
-    date_vente : datetime
+    date_vente : date
     vendeur_id : int
     produit_id : int
     quantite : int = Field(gt=0)
