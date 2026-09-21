@@ -1,6 +1,7 @@
 from collections import Counter
 from datetime import date, timedelta
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -17,11 +18,11 @@ from api import (
     get_ventes,
 )
 
-MOIS_ABBR = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-]
 TOUTES = "Toutes"
+MOIS_ABBR = [
+    "janv.", "févr.", "mars", "avr.", "mai", "juin",
+    "juil.", "août", "sept.", "oct.", "nov.", "déc.",
+]
 
 
 def format_euros(montant):
@@ -114,11 +115,31 @@ with col_courbe:
     st.subheader("Évolution du CA")
     if evolution:
         df_evo = pd.DataFrame(evolution)
-        df_evo["mois_libelle"] = [
+        df_evo["date"] = pd.to_datetime(
+            {
+                "year": df_evo["annee"].astype(int),
+                "month": df_evo["mois"].astype(int),
+                "day": 1,
+            }
+        )
+        df_evo = df_evo.sort_values("date")
+        df_evo["mois_annee"] = [
             libelle_mois(int(row.annee), int(row.mois)) for row in df_evo.itertuples()
         ]
-        df_evo = df_evo.set_index("mois_libelle")
-        st.line_chart(df_evo["ca_total"])
+        courbe = (
+            alt.Chart(df_evo)
+            .mark_line()
+            .encode(
+                x=alt.X(
+                    "mois_annee:N",
+                    title=None,
+                    sort=alt.EncodingSortField(field="date", order="ascending"),
+                    axis=alt.Axis(labelAngle=-40),
+                ),
+                y=alt.Y("ca_total:Q", title=None),
+            )
+        )
+        st.altair_chart(courbe, width="stretch")
     else:
         st.info("Aucune donnée pour ces filtres.")
 
